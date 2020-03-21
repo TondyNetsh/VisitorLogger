@@ -7,15 +7,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Visitor {
-    private String firstName, lastName, comments, visitorName;
+    private String fullName, comments, visitorName;
     private int age;
     private String dateOfVisit;
     private String timeOfVisit;
     private static Logger myLog = LogManager.getLogger(Visitor.class.getName());
 
-    public Visitor(String firstName,String lastName, int age, String dateOfVisit, String timeOfVisit, String comments,String visitorName){
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public Visitor(String fullName, int age, String dateOfVisit, String timeOfVisit, String comments,String visitorName){
+        this.fullName = fullName;
         this.age = age;
         this.dateOfVisit = dateOfVisit;
         this.timeOfVisit = timeOfVisit;
@@ -23,10 +22,11 @@ public class Visitor {
         this.visitorName = visitorName;
     }
 
-    public static void save(String firstName,String lastName, int age, String dateOfVisit, String timeOfVisit, String comments, String visitorName) throws IOException{
+    public static void save(String fullName, int age, String dateOfVisit, String timeOfVisit, String comments, String visitorName) throws IOException{
+
         try{
             Scanner sc = new Scanner(System.in);
-            File file = new File("files/visitor_"+firstName.toLowerCase()+"_"+lastName.toLowerCase()+".txt");
+            File file = new File("files/visitor_"+fullName.replace("","_").toLowerCase()+"_"+".txt");
 
             if(file.exists()== false){
                 System.out.println("File created successfully.");
@@ -38,8 +38,7 @@ public class Visitor {
                 System.out.println(0);
             }
             BufferedWriter add = new BufferedWriter(new FileWriter (file, true));
-            add.write("Full Name: "+firstName+" ");
-            add.write(lastName+"\n");
+            add.write("Full Name: "+fullName+" ");
             add.write("Age: "+age+"\n");
             add.write("Date of visit: "+dateOfVisit+"\n");
             add.write("Time of visit: " + timeOfVisit+"\n");
@@ -54,9 +53,10 @@ public class Visitor {
         }
     }
 
-    public static void load(String firstName,String lastName) throws IOException{
+    public static void load(String fullName) throws IOException{
+
         try{
-            FileReader fr = new FileReader("files/visitor_"+firstName.toLowerCase()+"_"+lastName.toLowerCase()+".txt");
+            FileReader fr = new FileReader("files/visitor_"+fullName.toLowerCase().replace("","_").toLowerCase()+".txt");
             BufferedReader br = new BufferedReader(fr);
             int i;
 
@@ -74,7 +74,7 @@ public class Visitor {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        String fname, lname,comments,vistorName;
+        String fname, comments,vistorName;
         String dateOfVisit, timeOfVisit;
         int age;
         DateTimeFormatter date = DateTimeFormatter.ofPattern("yyyy/MM/dd");
@@ -83,8 +83,7 @@ public class Visitor {
         LocalDateTime timeNow = LocalDateTime.now();
 
         try{
-            fname = JOptionPane.showInputDialog(null,"What is your first name?");
-            lname = JOptionPane.showInputDialog(null,"What is your last name?");
+            fname = JOptionPane.showInputDialog(null,"What is your full name?");
             age = Integer.parseInt(JOptionPane.showInputDialog(null,"What is your age?"));
 
             dateOfVisit = dateNow.format(date);
@@ -93,8 +92,8 @@ public class Visitor {
             comments = JOptionPane.showInputDialog(null,"What are your comments about us?");
             vistorName = JOptionPane.showInputDialog(null,"What is the name of person who assisted you?");
 
-            Visitor.save(fname,lname,age,dateOfVisit,timeOfVisit,comments,vistorName);
-            Visitor.load(fname,lname);
+            Visitor.save(fname,age,dateOfVisit,timeOfVisit,comments,vistorName);
+            Visitor.load(fname);
         }
         catch (IOException e){
             myLog.error("ERROR: " + e.getMessage());
